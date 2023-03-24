@@ -32,81 +32,99 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
 
 
 <!-- Header -->
-<header class="w3-container w3-red w3-center" style="padding:128px 16px">
-  <h1 class="w3-margin w3-jumbo">Donald Tusk</h1>
-  <p class="w3-black w3-padding-large w3-large w3-margin-top">A imię jego zostało przywołane <span id="number"></span> razy</p>
+<header class="w3-display-container w3-blue w3-content w3-center w3-wide" style="max-width:1600px;min-width:500px" id="home">
+  <img class="w3-image" src="tusk.jpg" alt="Donald Tusk" width="1600" height="800">
+  <div class="w3-display-middle w3-padding-large">
+    <h1 class="w3-margin w3-jumbo">Donald Tusk.</h1> 
+    <h2 class="w3-margin w3-xlarge"><i>A imię jego zostało przywołane jedyne <span id="number"></span> razy</i></h2>
+  </div>
 </header>
+<!-- <header class="w3-container w3-pink w3-center" style="padding:128px 16px">
+  <h1 class="w3-margin w3-jumbo">Donald Tusk.</h1> 
+  <h2 class="w3-margin w3-xlarge"><i>A imię jego zostało przywołane jedyne <span id="number"></span> razy</i></h2>
+</header> -->
 
 <!-- First Grid -->
 <div class="w3-row-padding w3-padding-64 w3-container">
   <div class="w3-content">
-    <canvas id="myChart"></canvas>  
     <p>Wykres przedstawia ile razy nazwisko lidera opozycji zostało wymienione na głównej stronie <i>publicznego</i> serwisu informacyjnego https://www.tvp.info/ o podanym czasie.</p>
     <p>Dla kontrastu, wykres śledzi takze ilość wystąpień słów zwiazanych z naszym Premierem oraz jego przełozonym.</p>
-    <script>
-      // Load the JSON data using XMLHttpRequest
-      var request = new XMLHttpRequest();
-      request.open("GET", "results.json", false);
-      request.send(null);
-      var jsonData = JSON.parse(request.responseText);
-      
-      // Convert the data into the format expected by Chart.js
-      var data = {};
-      jsonData.forEach(function(entry) {
-        var time = Object.keys(entry)[0];
-        data[time] = entry[time];
-      });
-      
-      var chartData = {
-        labels: Object.keys(data).map(function(time) {
-          var date = new Date(time);
-          return date.toLocaleString('en-GB', {year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'});
-        }),
-        datasets: [{
-          label: "Tusk",
-          data: Object.values(data).map(obj => obj.Tusk),
-          backgroundColor: "rgba(255, 99, 132, 0.2)",
-          borderColor: "rgba(255, 99, 132, 1)",
-          borderWidth: 4
-        }, {
-          label: "Kaczyński",
-          data: Object.values(data).map(obj => obj.Kaczyńsk),
-          backgroundColor: "rgba(54, 162, 235, 0.2)",
-          borderColor: "rgba(54, 162, 235, 1)",
-          borderWidth: 4
-        }, {
-          label: "Morawiecki",
-          data: Object.values(data).map(obj => obj.Morawiec),
-          backgroundColor: "rgba(255, 206, 86, 0.2)",
-          borderColor: "rgba(255, 206, 86, 1)",
-          borderWidth: 4
-        }]
-      };
-      
-      // Set up the chart options
-      var chartOptions = {
-        responsive: true,
-        title: {
-          display: true,
-          text: "Für Tusk"
-        },
-        scales: {
-          yAxes: [{
-            ticks: {
-              beginAtZero:true
+    <div class="w3-image w3-content w3-padding-64">
+      <canvas id="myChart"></canvas>  
+      <script>
+        // Load the JSON data using XMLHttpRequest
+        var request = new XMLHttpRequest();
+        request.open("GET", "results.json", false);
+        request.send(null);
+        var jsonData = JSON.parse(request.responseText);
+        
+        // Convert the data into the format expected by Chart.js
+        var data = {};
+        Object.keys(jsonData).forEach(function(time) {
+          data[time] = jsonData[time];
+        });
+        
+        var chartData = {
+          labels: Object.keys(data).map(function(time) {
+            var date = new Date(time);
+            return date.toLocaleString('en-GB', {year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'});
+          }),
+          datasets: [{
+            label: "Tusk",
+            data: Object.values(data).map(obj => obj.Tusk),
+            backgroundColor: "rgba(255, 0, 0, 1)",
+            borderColor: "rgba(255, 0, 0, 1)",
+            borderWidth: 5
+          }, 
+          {
+            label: "Kaczyński",
+            data: Object.values(data).map(obj => obj.Kaczyńsk),
+            backgroundColor: "rgba(54, 162, 235, 1)",
+            borderColor: "rgba(54, 162, 235, 1)",
+            borderWidth: 5
+          }, 
+          {
+            label: "Morawiecki",
+            data: Object.values(data).map(obj => obj.Morawiec),
+            backgroundColor: "rgba(138, 43, 226, 1)",
+            borderColor: "rgba(138, 43, 226, 1)",
+            borderWidth: 5
+          }
+        ]
+        };
+        
+        // Create the chart
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+          type: 'line',
+          data: chartData,
+          options: {
+            responsive: true,
+            title: {
+              display: true,
+              text: 'Wystepowalnosc nazwisk politykow na stronie glownej TVP.info'
+            },
+            options: {
+              plugins: {
+                legend: {
+                  title: {
+                    display: false,
+                    text: 'Legend Title',
+                  }
+                }
+              }
+            },
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero: true
+                }
+              }]
             }
-          }]
-        }
-      };
-      
-      // Create the chart
-      var ctx = document.getElementById("myChart").getContext("2d");
-      var myChart = new Chart(ctx, {
-        type: "line",
-        data: chartData,
-        options: chartOptions
-      });
-    </script>
+          }
+        });
+      </script>
+      </div>
   </div>
 </div>
 

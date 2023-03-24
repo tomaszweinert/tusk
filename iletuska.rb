@@ -45,7 +45,6 @@ search_words.each do |word|
   results[current_time][word] = word_count
 end
 # Save the results.json to a file
-puts JSON.pretty_generate(results)
 File.write("results.json", JSON.pretty_generate(results))
 
 search_words = ['Tusk']
