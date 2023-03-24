@@ -11,9 +11,15 @@ user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 # Download the webpage and create a Nokogiri document with the user agent set in the headers
 html = URI.open(url, "User-Agent" => user_agent).read
 document = Nokogiri::HTML.parse(html)
+f = "results.json"
 
 # Get the current date and time as a Unix timestamp
 current_time = Time.now.iso8601
+
+# Create an empty file
+unless File.exist?(f)
+  File.new(f, "w")
+end
 
 results = {}
 
@@ -34,4 +40,4 @@ search_words.each do |word|
 end
 
 # Write the updated results hash to the results JSON file
-File.write('results.json', JSON.generate(results)+"\n", File.size('results.json'), mode: 'a')
+File.write(f, JSON.generate(results)+"\n", File.size(f), mode: 'a')
