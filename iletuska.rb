@@ -17,12 +17,18 @@ f = "results.json"
 current_time = Time.now.iso8601
 
 # Create an empty file
-unless File.exist?(f)
-  File.new(f, "w")
+# unless File.exist?(f)
+#   File.new(f, "w")
+# end
+# results = {}
+
+if File.exist?("results.json")
+  # Read the existing JSON file and parse it into a hash
+  results = JSON.parse(File.read("results.json"))
+else
+  # If the results file doesn't exist, create an empty hash
+  results = {}
 end
-
-results = {}
-
 
 # Loop through the search words and count the number of occurrences of each word
 search_words.each do |word|
@@ -38,6 +44,19 @@ search_words.each do |word|
   end
   results[current_time][word] = word_count
 end
+# Save the results.json to a file
+puts JSON.pretty_generate(results)
+File.write("results.json", JSON.pretty_generate(results))
 
-# Write the updated results hash to the results JSON file
-File.write(f, JSON.generate(results)+"\n", File.size(f), mode: 'a')
+search_words = ['Tusk']
+search_words.each do |word|
+  # Split the document text into words
+  words = document.css('body').text.split(/\W+/)
+  
+  # Count the number of instances of the search word
+  word_count = words.count { |w| w.downcase.include?(word.downcase) }
+  results = word_count
+end
+
+# Save the number of times the word Tusk was used to a file
+File.write("number.txt", JSON.generate(results))
